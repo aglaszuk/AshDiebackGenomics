@@ -7,7 +7,7 @@ library(psych) # pairs.panels
 library(gplots) # heatmap
 
 # Set working directory
-setwd("path/to/working/directory")
+setwd("./data/")
 
 # Load phenotype data
 phen <- read.table("5_PhenotypeClimDat/Dat_phenotype_climate.txt", 
