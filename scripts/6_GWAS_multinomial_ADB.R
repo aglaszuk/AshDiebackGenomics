@@ -10,7 +10,7 @@ library(adegenet)
 library(ggplot2)
 
 # Set working directory
-setwd("//bfwsbfile1/Institut2/Aglaia/EscheNot/manuscript/SubmissionDataScripts/data/")
+setwd("./data/")
 
 ##########               ##########
 ########## GENOTYPE DATA ##########
@@ -94,7 +94,7 @@ colnames(y) <- "ADB"
 # PCA of genotypes - plots barplot of eigenvalues automatically
 pca <- dudi.pca(X, 
                 scale=F
-) # from a first check I saw that here it makes more sense to keep only 2 axes showing larger increments were selected
+) 
 head(pca$eig)
 head(pca$l1)
 
@@ -172,8 +172,7 @@ set.seed(1)
 xval1 <- xvalDapc(X, 
                   as.matrix(y),
                   n.pca=c(c(1,3),seq(10, 80, 10)),
-                  n.rep=20) # may take a moment...
-# The cross-validation shows not much structure...
+                  n.rep=20) 
 
 # Take a look at the object xval1 containing the results of cross-validation
 xval1[2:6] # 3 PCs seem optimal to correct phenotypic groups, but let´s still try with values up to 7 PCs
@@ -191,9 +190,8 @@ result <- snpzip(X,
                  plot = TRUE, 
                  loading.plot = TRUE
 )
-# Clearly, SNPs cannot distinguish the phenotype classe, which overlap
 
-summary(dapc1) #assignment is quite bad
+summary(dapc1) 
 
 ###########                                               ##########
 ########### Include population stratification in the GWAS ##########
@@ -364,11 +362,10 @@ set.seed(1)
 xval1 <- xvalDapc(X[,significant_snps], 
                   as.matrix(y),
                   n.pca=c(c(1,3),seq(10, 80, 10)),
-                  n.rep=20) # may take a moment...
-# The cross-validation shows not much structure...
+                  n.rep=20) 
 
 # Take a look at the object xval1 containing the results of cross-validation
-xval1[2:6] # 3 PCs seem optimal to correct phenotypic groups, but let´s still try with values up to 7 PCs
+xval1[2:6] 
 
 # The last element of the output of xvalDapc is a dapc object generated with the optimal
 # number of PCs, as indicated by RMSE. Store this in an object called dapc1
@@ -383,9 +380,7 @@ result <- snpzip(X,
                  plot = TRUE, 
                  loading.plot = TRUE
 )
-# Clearly, SNPs cannot distinguish the phenotype classe, which overlap
-
-summary(dapc1) #assignment is quite bad
+summary(dapc1)
 
 ########             #########
 ######## Predictions #########
