@@ -21,7 +21,7 @@ library(dplyr)
 ########################## LOAD and PRPARE GENOTYPE DATA ##############################
 ############                                                                ###########
 
-setwd("//bfwsbfile1/Institut2/Aglaia/EscheNot/manuscript/SubmissionDataScripts/data")
+setwd("./data")
 
 # Genotype data after filtering by maf, missingness, and monomorphic loci
 gen <- read.table("4_NewRefAnn_UniqueHits_NoHybridInd_GWAS+LD/Dat_6742SNPs_1037Ind.txt",
@@ -381,33 +381,7 @@ frax.rda.cand <- c(names(outliers(load.rda[,1],3)),
 frax.rda.cand[duplicated(frax.rda.cand)] # no candidates are shared by more than one predictors
 # the two SNPs also found in lfmm are associated with both T and Precipitation gradient
 
-# If synthetic PC was used
-write.table(names(outliers(load.rda[,1],3)), 
-            file="../results/4_GEA/candidatesRDA1_syntheticPC.txt", 
-            quote = F,
-            col.names = F,
-            row.names = F)
-# If several predictors were used
-write.table(names(outliers(load.rda[,1],3)), 
-            file="../results/4_GEA/candidatesRDA1_altitude.txt", 
-            quote = F,
-            col.names = F,
-            row.names = F)
-write.table(names(outliers(load.rda[,2],3)), 
-            file="../results/4_GEA/candidatesRDA2_T.txt",
-            quote = F,
-            col.names = F,
-            row.names = F)
-
-write.table(names(outliers(load.rda[,3],3)), 
-            file="../results/4_GEA/candidatesRDA3_prec.txt", 
-            quote = F,
-            col.names = F,
-            row.names = F)
-
 # Plot RDA results 
-# pred.red$col <- "#915475" #not resistant
-# pred.red$col[pred.red$damage_Class == 1] <- "#CC8500" #resistant
 
 # Define colors for plotting
 # Precipitation
