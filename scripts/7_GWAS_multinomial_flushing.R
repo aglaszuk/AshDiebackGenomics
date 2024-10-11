@@ -10,7 +10,7 @@ library(adegenet)
 library(ggplot2)
 
 # Set working directory
-setwd("//bfwsbfile1/Institut2/Aglaia/EscheNot/manuscript/SubmissionDataScripts/data/")
+setwd("./data/")
 
 ##########               ##########
 ########## GENOTYPE DATA ##########
@@ -90,7 +90,7 @@ phenfl <- phen[!is.na(phen$Flush_1st),] #remove NAs
 dim(phenfl)
 head(phenfl)
 head(phen)
-phenfl2 <- phenfl[phenfl$flushClass == "green",] # keep only correct assignments 
+phenfl2 <- phenfl[phenfl$flushClass == "green",] # keep only correct assignments that are in the "green" class
 dim(phenfl2)
 head(phenfl2)
 genotype<- genotype[rownames(genotype) %in% phenfl2$Taxa,]
@@ -194,9 +194,8 @@ set.seed(1)
 xval1 <- xvalDapc(X, 
                   as.matrix(y),
                   n.pca=c(c(1,3),seq(10, 80, 10)),
-                  n.rep=20) # may take a moment...
-# The cross-validation shows not much structure...
-
+                  n.rep=20) 
+        
 # Take a look at the object xval1 containing the results of cross-validation
 xval1[2:6] # 3 PCs seem optimal to correct phenotypic groups, but let´s still try with values up to 7 PCs
 
@@ -213,9 +212,8 @@ result <- snpzip(X,
                  plot = TRUE, 
                  loading.plot = TRUE
 )
-# Clearly, SNPs cannot distinguish the phenotype classe, which overlap
 
-summary(dapc1) #assignment is quite bad
+summary(dapc1)
 
 ###########                                               ##########
 ########### Include population stratification in the GWAS ##########
@@ -259,7 +257,6 @@ cvfit <- cv.glmnet(snps.corrected,
                    family = "multinomial",
                    alpha = 1
                    )
-# Warning when running model with Flush_1st: one multinomial or binomial class has fewer than 8  observations; dangerous ground
 
 # Extract Best lambda from the cross-validation
 best_lambda <- cvfit$lambda.min
@@ -300,74 +297,4 @@ for (i in 1:length(coefficients)) {
 
 # significant_snps now contains the list of SNPs with non-zero coefficients
 print(significant_snps)
-
-#######                                                               #######
-####### PLOT Genotype frequency in each phenotype class to check SNPs #######
-#######                                                               #######
-
-# Extract genotype and phenotype data
-genotype_data <- X[,significant_snps[4]] # SNP 
-head(genotype_data)
-phenotype_data <- y$Flush_2nd
-head(phenotype_data)
-
-# Create a data frame with genotype frequency by phenotype
-plot_data <- data.frame(Genotype = genotype_data, Phenotype = phenotype_data)
-colnames(plot_data) <- c("Genotype", "Phenotype")
-head(plot_data)
-
-# Count frequencies of each genotype in each phenotype class
-genotype_freq <- as.data.frame(table(plot_data$Genotype, plot_data$Phenotype))
-colnames(genotype_freq) <- c("Genotype", "Phenotype", "Frequency")
-head(genotype_freq)
-
-# Plot the data
-ggplot(genotype_freq, aes(x = Genotype, y = Frequency, fill = Phenotype)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs(title = paste0("Genotype Frequencies at significant SNP ",significant_snps[4]),
-       x = "Genotype",
-       y = "Number of Individuals",
-       fill = "Phenotype Class") +
-  theme_minimal()
-
-########             #########
-######## Predictions #########
-########             #########
-
-# Make class predictions using the final_model. 
-# It predicts whether each sample in X (your matrix of SNPs) belongs to a particular class, 
-# based on the lambda value (best_lambda) selected via cross-validation.
-predicted_classes <- predict(final_model, 
-                             newx = X, 
-                             s = best_lambda, 
-                             type = "class"
-                             ) 
-table(predicted_classes) # This line generates a frequency table of the predicted classes, allowing you to see how many samples are predicted in each class.
-table(y)
-
-# Compute the predicted probabilities for each sample in X. 
-# In a classification problem (for example, binary or multiclass logistic regression), 
-# this will give the probabilities of the sample belonging to each class.
-predicted_probabilities <- predict(final_model, 
-                                   newx = X, 
-                                   s = best_lambda, 
-                                   type = "response"
-                                   )
-table(predicted_classes) # the model predicts if the sample belongs to class 1 or 6 
-summary(predicted_probabilities)
-
-# Check Consistency Between Predicted and Actual Classes:
-predicted_classes <- as.matrix(as.numeric(predicted_classes))
-rownames(predicted_classes) <- rownames(y)
-head(predicted_classes)
-dim(predicted_classes)
-table(predicted_classes)
-observed_classes <- as.matrix(y)
-table(observed_classes)
-
-# Create confusion matrix
-confusion_matrix <- table(predicted_classes, observed_classes)
-print(confusion_matrix)
-accuracy <- 41 / length(observed_classes) # 6 matching classifications
-print(paste("Accuracy: ", accuracy)) # 0.07 accuracy
   
