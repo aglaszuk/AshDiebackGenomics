@@ -13,7 +13,7 @@ library(readxl)
 library(directlabels)
 
 # Set working directory
-setwd("/path/to/working/directory")
+setwd("./data/")
 
 #######                   #######
 ####### 1 - GENOTYPE DATA #######
