@@ -10,7 +10,7 @@ library(ggplot2)
 library(ggrepel)
 
 # Set working directory
-setwd("//bfwsbfile1/Institut2/Aglaia/EscheNot/manuscript/SubmissionDataScripts/data/")
+setwd("./data/")
 
 #######                   #######
 ####### 1 - GENOTYPE DATA #######
